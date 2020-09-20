@@ -77,4 +77,5 @@ export default {
   World: require('./images/world.png'),
   addToList: require('./images/kuis-plate.jpg'),
   emptyPlate: require('./images/empty-plate.png'),
+  deletePlate: require('./images/delete-plate.png'),
 };

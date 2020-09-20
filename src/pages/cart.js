@@ -31,8 +31,9 @@ const sidebars = (22 * WIDTH) / 100;
 const sidebarsinner = (20 * WIDTH) / 100;
 const mainsinner1 = (25 * WIDTH) / 100;
 const mainsinner2 = (15 * WIDTH) / 100;
+const sidebars1 = (33 * WIDTH) / 100;
 
-export default class Featured extends Component {
+export default class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,84 +48,13 @@ export default class Featured extends Component {
       aToken: '',
       amount: '',
       count: 0,
-      basketArray: [],
+      deleteArray: [],
+
+      refresh: false,
+      page: 1,
+      seed: 1,
     };
   }
-
-  cart = (appPriceA, menuItemIdA, appPriceSpecialA) => {
-    count = this.state.count;
-    basketArray = this.state.basketArray;
-    count += 1;
-    const addObj = {
-      id: menuItemIdA,
-      cost: appPriceA,
-      specialPrice: appPriceSpecialA,
-    };
-    basketArray.push(addObj);
-
-    aToken = this.state.aToken;
-    user_id = this.state.userID;
-
-    if (!user_id) {
-      user_id = 'UNAVAILABLE';
-    }
-
-    if (appPriceSpecialA) {
-      appPriceC = appPriceSpecialA;
-    } else {
-      appPriceC = appPriceA;
-    }
-    //alert(JSON.stringify(basketArray));
-    //alert(aToken);
-
-    this.setState(prevState => {
-      return {
-        appPrice: appPriceC,
-        menuItemId: menuItemIdA,
-        count: count,
-        appPriceOriginal: appPriceA,
-        basketArray: basketArray,
-        specialPrice: appPriceSpecialA,
-        /*basketArray: [
-          ...prevState.basketArray,
-          {id: menuItemIdA, cost: appPriceA},
-        ],*/
-      };
-    });
-
-    fetch('https://www.infohtechict.co.ke/apps/kuismenu/add-cart.php', {
-      method: 'post',
-      header: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        menuitem_idAPI: menuItemIdA,
-        access_tokenAPI: aToken,
-        user_idAPI: user_id,
-        amountAPI: 1,
-        priceAPI: appPriceC,
-        totalAPI: appPriceC,
-      }),
-    })
-      .then(response => response.json())
-      .then(responseJsonFromServer => {
-        if (responseJsonFromServer == 'added to cart') {
-          alert(responseJsonFromServer);
-          //this.props.navigation.navigate('Login');
-        } else {
-          alert('Something went wrong');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
-  postCart = () => {
-    //alert("yo");
-    //onButtonPress = () => this.props.navigation.navigate("Login");
-  };
 
   renderItem = ({item}) => {
     return (
@@ -194,7 +124,7 @@ export default class Featured extends Component {
             width: sidebars,
           }}>
           <TouchableOpacity
-            onPress={this.cart.bind(
+            onPress={this.deleteCart.bind(
               this,
               item.price,
               item.id,
@@ -207,7 +137,7 @@ export default class Featured extends Component {
                 margin: 0,
                 borderRadius: 30,
               }}
-              source={Assets.addToList}
+              source={Assets.deletePlate}
             />
           </TouchableOpacity>
         </View>
@@ -219,20 +149,109 @@ export default class Featured extends Component {
     return <View style={{height: 1, width: '100%', backgroundColor: 'gray'}} />;
   };
 
+  deleteCart = (appPriceA, menuItemIdA, appPriceSpecialA) => {
+    count = this.state.count;
+    deleteArray = this.state.deleteArray;
+    count += 1;
+    const addObj = {
+      id: menuItemIdA,
+      cost: appPriceA,
+      specialPrice: appPriceSpecialA,
+    };
+    deleteArray.push(addObj);
+
+    aToken = this.state.aToken;
+    user_id = this.state.userID;
+
+    if (!user_id) {
+      user_id = 'UNAVAILABLE';
+    }
+
+    if (appPriceSpecialA) {
+      appPriceC = appPriceSpecialA;
+    } else {
+      appPriceC = appPriceA;
+    }
+    //alert(JSON.stringify(deleteArray));
+    //alert(aToken);
+
+    this.setState(prevState => {
+      return {
+        appPrice: appPriceC,
+        menuItemId: menuItemIdA,
+        count: count,
+        appPriceOriginal: appPriceA,
+        deleteArray: deleteArray,
+        specialPrice: appPriceSpecialA,
+        /*deleteArray: [
+          ...prevState.deleteArray,
+          {id: menuItemIdA, cost: appPriceA},
+        ],*/
+      };
+    });
+
+    fetch('https://www.infohtechict.co.ke/apps/kuismenu/delete-cart.php', {
+      method: 'post',
+      header: {
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        menuitem_idAPI: menuItemIdA,
+        access_tokenAPI: aToken,
+        user_idAPI: user_id,
+        amountAPI: 1,
+        priceAPI: appPriceC,
+        totalAPI: appPriceC,
+      }),
+    })
+      .then(response => response.json())
+      .then(responseJsonFromServer => {
+        if (responseJsonFromServer == 'deleted from cart') {
+          alert(responseJsonFromServer);
+          this.props.navigation.navigate('Cart');
+        } else {
+          alert('Something went wrong');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    this.loadMore();
+  };
+
   componentDidMount() {
-    const url = 'https://www.infohtechict.co.ke/apps/kuismenu/featured';
-    fetch(url)
+    this.checkAccess();
+  }
+
+  fetchCart() {
+    aToken = this.state.aToken;
+    user_id = this.state.userID;
+    //alert(aToken);
+
+    fetch('https://www.infohtechict.co.ke/apps/kuismenu/cart.php', {
+      method: 'post',
+      header: {
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        //we will pass our input data to server
+        access_tokenAPI: aToken,
+        user_idAPI: user_id,
+      }),
+    })
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
           dataSource: responseJson,
           isLoading: false,
+          refresh: false,
         });
       })
       .catch(error => {
         console.log(error);
       });
-    this.checkAccess();
   }
 
   checkAccess = async () => {
@@ -245,23 +264,117 @@ export default class Featured extends Component {
         userID: chkCurrentUserId,
       };
     });
+
+    this.fetchCart();
+  };
+
+  loadMore = () => {
+    this.setState(
+      {
+        page: this.state.page + 1,
+        seed: this.state.seed + 1,
+        refresh: true,
+      },
+      () => {
+        this.fetchCart();
+      },
+    );
   };
 
   render() {
-    const {navigate} = this.props.navigation;
     return this.state.isLoading ? (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" color="#330066" animating />
       </View>
     ) : (
       <View style={styles.container}>
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: 'lightblue',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>In your your order</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>(4) items</Text>
+          </View>
+          <TouchableOpacity
+            style={{width: sidebars1, flexDirection: 'row'}}
+            onPress={() => this.props.navigation.navigate('Featured')}>
+            <Text style={styles.detail3}>Add more items</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={this.state.dataSource}
+          extraData={this.state}
           renderItem={this.renderItem}
           //keyExtractor={(item, index) => "list-item-${index}"}
           keyExtractor={(item, index) => index.toString()}
           //ItemSeparatorComponent={this.renderSeparator}
+          refreshing={this.state.refresh}
+          onRefresh={this.loadMore}
         />
+
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: 'lightblue',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>items</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>Total</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>445</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: '#f3940b',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3} />
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3} />
+          </View>
+          <TouchableOpacity
+            style={{
+              width: sidebars1,
+              flexDirection: 'row',
+              backgroundColor: 'lightblue',
+            }}
+            onPress={() => this.props.navigation.navigate('Completeorder')}>
+            <Text style={styles.detail3b}>Complete order</Text>
+          </TouchableOpacity>
+        </View>
+
         <DisplayModal WhipId="1" display={this.state.display} />
       </View>
     );
@@ -285,7 +398,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
   },
-  logoText: {
+  headerText: {
     marginVertical: 15,
     fontSize: 18,
     color: 'rgba(255,255,255,0.7)',
@@ -327,16 +440,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderLeftWidth: 2,
   },
-  comReactButton: {
-    fontSize: 8,
-    width: 45,
-    flexDirection: 'row',
-  },
-  comReactButtonExt: {
-    fontSize: 8,
-    width: 50,
-    flexDirection: 'row',
-  },
+
   detail1: {
     color: 'red',
     fontSize: 10,
@@ -346,6 +450,26 @@ const styles = StyleSheet.create({
     color: '#8e0606',
     fontSize: 10,
     width: mainsinner2,
+  },
+  detail3: {
+    width: '100%',
+    color: '#8e0606',
+    fontSize: 12,
+    padding: 5,
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 16,
+  },
+  detail3b: {
+    width: '100%',
+    color: '#8e0606',
+    fontSize: 14,
+    padding: 5,
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 16,
   },
   bookingDetail2: {
     color: 'green',

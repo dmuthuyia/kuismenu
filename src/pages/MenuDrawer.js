@@ -106,7 +106,7 @@ export default class MenuDrawer extends React.Component {
         <View style={styles.drawerHeader}>
           <TouchableOpacity
             //onPress={() => this.props.navigation.navigate('Requests')}
-            onPress={() => this.props.navigation.goBack()}>
+            onPress={() => this.props.navigation.navigate('Featured')}>
             <Image
               style={{width: 40, height: 40, margin: 5}}
               source={Assets.boukdHome2}

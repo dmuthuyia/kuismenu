@@ -39,6 +39,9 @@ import Page from './page';
 import Booking from './booking';
 import NoticeBoard from './noticeboard';
 
+import Cart from './cart';
+import Completeorder from './completeorder';
+
 class Dashboad extends Component {
   render() {
     return (
@@ -124,7 +127,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
     navigationOptions: ({navigation}) => {
       const {routeName} = navigation.state.routes[navigation.state.index];
       return {
-        headerTitle: "Kui's Menu" + '  ',
+        headerTitle: 'Kuis Menu' + '  ',
         headerStyle: {
           backgroundColor: '#f3940b',
         },
@@ -167,6 +170,31 @@ const DashboardStackNavigator = createStackNavigator(
         },
       },
     },
+    Cart: {
+      screen: Cart,
+      navigationOptions: {
+        headerStyle: {
+          backgroundColor: '#f3940b',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      },
+    },
+    Completeorder: {
+      screen: Completeorder,
+      navigationOptions: {
+        headerStyle: {
+          backgroundColor: '#f3940b',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      },
+    },
+
     NoticeBoard: {
       screen: NoticeBoard,
       navigationOptions: {
@@ -196,7 +224,7 @@ const DashboardStackNavigator = createStackNavigator(
   {
     defaultNavigationOptions: ({navigation}) => {
       return {
-        headerTitle: 'connectlift',
+        headerTitle: 'Kuis menu',
         headerLeft: () => (
           <View>
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -218,7 +246,7 @@ const DashboardStackNavigator = createStackNavigator(
               alignItems: 'center',
             }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('NoticeBoard')}
+              onPress={() => navigation.navigate('Cart')}
               style={{
                 width: 40,
                 height: 40,
@@ -242,7 +270,7 @@ const DashboardStackNavigator = createStackNavigator(
                   resizeMode: 'contain', // works only here!
                 }}>
                 <View>
-                  <Text style={{fontSize: 10, color: 'red'}}>5</Text>
+                  <Text style={{fontSize: 12, color: '#ffffff'}}>Picked</Text>
                 </View>
               </ImageBackground>
             </TouchableOpacity>

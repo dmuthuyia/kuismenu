@@ -31,8 +31,9 @@ const sidebars = (22 * WIDTH) / 100;
 const sidebarsinner = (20 * WIDTH) / 100;
 const mainsinner1 = (25 * WIDTH) / 100;
 const mainsinner2 = (15 * WIDTH) / 100;
+const sidebars1 = (33 * WIDTH) / 100;
 
-export default class Featured extends Component {
+export default class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -235,6 +236,8 @@ export default class Featured extends Component {
     this.checkAccess();
   }
 
+  }
+
   checkAccess = async () => {
     const chkToken = await AsyncStorage.getItem('ticket');
     const chkCurrentUserId = await AsyncStorage.getItem('currentUserId');
@@ -255,6 +258,30 @@ export default class Featured extends Component {
       </View>
     ) : (
       <View style={styles.container}>
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: 'lightblue',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>In your your order</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>(4) items</Text>
+          </View>
+          <TouchableOpacity
+            style={{width: sidebars1, flexDirection: 'row'}}
+            onPress={() => this.props.navigation.navigate('Featured')}>
+            <Text style={styles.detail3}>Add more items</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={this.state.dataSource}
           renderItem={this.renderItem}
@@ -262,6 +289,59 @@ export default class Featured extends Component {
           keyExtractor={(item, index) => index.toString()}
           //ItemSeparatorComponent={this.renderSeparator}
         />
+
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: 'lightblue',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>items</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>Total</Text>
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3}>445</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            width: WIDTH,
+            flexDirection: 'row',
+
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: '#f3940b',
+            borderBottomColor: 'purple',
+            borderBottomWidth: 2,
+          }}>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3} />
+          </View>
+          <View style={{width: sidebars1, flexDirection: 'row'}}>
+            <Text style={styles.detail3} />
+          </View>
+          <TouchableOpacity
+            style={{
+              width: sidebars1,
+              flexDirection: 'row',
+              backgroundColor: 'lightblue',
+            }}
+            onPress={() => this.props.navigation.navigate('Featured')}>
+            <Text style={styles.detail3b}>Complete order</Text>
+          </TouchableOpacity>
+        </View>
+
         <DisplayModal WhipId="1" display={this.state.display} />
       </View>
     );
@@ -285,7 +365,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
   },
-  logoText: {
+  headerText: {
     marginVertical: 15,
     fontSize: 18,
     color: 'rgba(255,255,255,0.7)',
@@ -327,16 +407,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderLeftWidth: 2,
   },
-  comReactButton: {
-    fontSize: 8,
-    width: 45,
-    flexDirection: 'row',
-  },
-  comReactButtonExt: {
-    fontSize: 8,
-    width: 50,
-    flexDirection: 'row',
-  },
+
   detail1: {
     color: 'red',
     fontSize: 10,
@@ -346,6 +417,26 @@ const styles = StyleSheet.create({
     color: '#8e0606',
     fontSize: 10,
     width: mainsinner2,
+  },
+  detail3: {
+    width: '100%',
+    color: '#8e0606',
+    fontSize: 12,
+    padding: 5,
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 16,
+  },
+  detail3b: {
+    width: '100%',
+    color: '#8e0606',
+    fontSize: 14,
+    padding: 5,
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 16,
   },
   bookingDetail2: {
     color: 'green',
